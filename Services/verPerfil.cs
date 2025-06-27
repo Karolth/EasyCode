@@ -1,12 +1,36 @@
-using Microsoft.AspNetCore.Mvc;
+using TuProyecto.Models;
 
-namespace mi_proyecto_aspnetcore.Controllers
+public class PerfilService
 {
-    public class HomeController : Controller
+    private readonly AppDbContext _context;
+
+    public PerfilService(AppDbContext context)
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+        _context = context;
+    }
+
+    public Usuario ObtenerPerfilPorId(int id)
+    {
+        return _context.Usuarios
+            .Where(u => u.IdUsuario == id)
+            .Select(u => new Usuario
+            {
+                IdUsuario = u.IdUsuario,
+                Nombre = u.Nombre,
+                Documento = u.Documento,
+                Email = u.Email,
+                Celular = u.Celular
+            })
+            .FirstOrDefault();
+    }
+
+    public bool ActualizarPerfil(int id, string email, string celular)
+    {
+        var usuario = _context.Usuarios.FirstOrDefault(u => u.IdUsuario == id);
+        if (usuario == null) return false;
+
+        usuario.Email = email;
+        usuario.Celular = celular;
+        return _context.SaveChanges() > 0;
     }
 }
