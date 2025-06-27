@@ -1,0 +1,1 @@
+// Este archivo contiene scripts JavaScript para el proyecto.
